@@ -46,7 +46,7 @@ class CustomAuthToken(ObtainAuthToken):
         })
 
 
-
+####################################### USERs RELATED  VIEWS #######################################    
 @csrf_exempt
 @api_view(['POST'])
 def register_user(request):
@@ -79,8 +79,17 @@ def user_profile(request):
     serializer = UserProfileSerializer(user_profile)
     return JsonResponse(serializer.data, safe=False)
 
+@csrf_exempt
+@api_view(['GET'])
+def get_all_users(request):
+    if request.method == 'GET':
+        users = UserProfile.objects.all()
+        serialzer = UserProfileSerializer(users,many=True)
+        # data = JSONParser().parse(users)
+        return JsonResponse(serialzer.data,safe=False)
 
-
+    
+####################################### Products RELATED  VIEWS #######################################    
 @csrf_exempt
 @api_view(['GET'])
 def products_list(request):   
@@ -89,8 +98,16 @@ def products_list(request):
         serializer = ProductSerializer(product, many=True)
         return JsonResponse(serializer.data, safe=False)
 
-
-   
+@csrf_exempt
+@api_view(['GET'])
+def get_all_rates(request):
+    if request.method == 'GET':
+        rates = Rate.objects.all()
+        serialzer = RateSerializer(rates,many=True)
+        return JsonResponse(serialzer.data,safe=False)
+    
+    
+####################################### Orders RELATED  VIEWS #######################################       
 @csrf_exempt
 @api_view(['GET'])
 def orders_list(request):   
@@ -123,23 +140,6 @@ def user_orders(request,):
         user_orders = Order.objects.filter(customer=id)
         serializer = OrderSerializer(user_orders, many=True)
         return JsonResponse(serializer.data, safe=False)
-
-
-def calculate_amount_of_order(self):
-    return
-
-@csrf_exempt
-@permission_classes([IsAuthenticated])
-@api_view(['GET'])
-def get_order_details(request,id):
-    try:
-        order = Order.objects.get(id=id)
-        
-    except Order.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    serializer = OrderSerializer(order)
-    return Response(serializer.data)
-
 
 
 @csrf_exempt
@@ -188,23 +188,6 @@ def adding_orderItem(request):
 
 
 
-@csrf_exempt
-@api_view(['GET'])
-def get_all_users(request):
-    if request.method == 'GET':
-        users = UserProfile.objects.all()
-        serialzer = UserProfileSerializer(users,many=True)
-        # data = JSONParser().parse(users)
-        return JsonResponse(serialzer.data,safe=False)
-
-
-@csrf_exempt
-@api_view(['GET'])
-def get_all_rates(request):
-    if request.method == 'GET':
-        rates = Rate.objects.all()
-        serialzer = RateSerializer(rates,many=True)
-        return JsonResponse(serialzer.data,safe=False)
 
 
 
